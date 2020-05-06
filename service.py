@@ -1,3 +1,4 @@
+#coding=utf-8
 #from grovepi import *
 
 import requests
@@ -8,8 +9,16 @@ import Adafruit_DHT
 
 	
 def  get_tem_hum_by_yueqie():  #get temp and hum by huazy  
+    print("")
+    print("开始获取温湿度...")
     y,x= Adafruit_DHT.read_retry(Adafruit_DHT.DHT11,4)
-    print("%s"%x)
+    if x is None: 
+        x = 0
+        print("获取温度失败")
+    if y is None:
+        y = 0
+        print("获取湿度失败")
+    print("获取结束..")
     return x,y
 
 def calculateData(data):
@@ -46,6 +55,7 @@ def calculateData(data):
 
 
 def sendRequest(data):
+        print("调用fogcell项目....")
 	host = "http://172.17.0.1:8081"
 	data_str = json.dumps(data) 
 	print(host+"/compunit/serviceData - data:"+data_str)
@@ -68,13 +78,10 @@ while True:
         [ temp,hum ] = get_tem_hum_by_yueqie()     # get tem and hum by  huazy
         #temp = 0
         #hum = 0
-        
-        if temp == -1 or math.isnan(temp) or hum == -1 or math.isnan(hum):
-            print("invalid read")
-            print("temp==%d"%temp)
-            print("hum==%d"%hum)
-            print("huazy")
-
+        print("进入判断温温度环节....") 
+        if temp ==0  or temp == 0  :
+            print("数据无效")
+            print("")
             continue 
 
         print("temp =", temp, "C, humidity =", hum,"%")
@@ -84,9 +91,9 @@ while True:
         counter = counter + 1
         print("%d"%counter)
         if counter > MAX:
-            print("hehe")
+            counter = 0
             calculatedData = calculateData(data)
             sendRequest(calculatedData)
-            counter = 0
+           # counter = 0
     except (IOError,TypeError) as e:
         print("Error:"+str(e))
