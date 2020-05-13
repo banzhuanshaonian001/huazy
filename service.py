@@ -11,7 +11,7 @@ import Adafruit_DHT
 def  get_tem_hum_by_yueqie():  #get temp and hum by huazy  
     print("")
     print("开始获取温湿度...")
-    y,x= Adafruit_DHT.read_retry(Adafruit_DHT.DHT11,4)
+    y,x= Adafruit_DHT.read_retry(Adafruit_DHT.DHT11,17)
     if x is None: 
         x = 0
         print("获取温度失败")
